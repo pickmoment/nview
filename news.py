@@ -3,6 +3,7 @@ from gspread_pandas import Spread, Client
 from pampy import match
 import re
 from requests_html import HTMLSession
+from datetime import datetime
 session = HTMLSession()
 
 def get_media_list():
@@ -24,32 +25,37 @@ def get_summary(article_link):
     return None
 
 
-article_list = get_article_list('028', '20190504')
-for article in article_list:
-    article['summary'] = get_summary(article['link'])
+media_list = [{'id': '028', 'title': '한겨레'},
+ {'id': '022', 'title': '세계일보'},
+ {'id': '023', 'title': '조선일보'},
+ {'id': '044', 'title': '코리아헤럴드'},
+ {'id': '081', 'title': '서울신문'},
+ {'id': '015', 'title': '한국경제'},
+ {'id': '025', 'title': '중앙일보'},
+ {'id': '030', 'title': '전자신문'},
+ {'id': '032', 'title': '경향신문'},
+ {'id': '008', 'title': '머니투데이'},
+ {'id': '018', 'title': '이데일리'},
+ {'id': '014', 'title': '파이낸셜뉴스'},
+ {'id': '009', 'title': '매일경제'},
+ {'id': '029', 'title': '디지털타임스'},
+ {'id': '020', 'title': '동아일보'},
+ {'id': '011', 'title': '서울경제'},
+ {'id': '469', 'title': '한국일보'},
+ {'id': '005', 'title': '국민일보'},
+ {'id': '021', 'title': '문화일보'},
+ {'id': '277', 'title': '아시아경제'},
+ {'id': '016', 'title': '헤럴드경제'}]
 
-df = pd.DataFrame(article_list)
 
-# file_name = "http://stats.idre.ucla.edu/stat/data/binary.csv"
-# df = pd.read_csv(file_name)
+if __name__ == '__main__':
+    ymd = datetime.now().strftime('%Y%m%d')
+    for media in media_list:
+        article_list = get_article_list(media['id'], ymd)
+        for article in article_list:
+            article['summary'] = get_summary(article['link'])
 
-# 'Example Spreadsheet' needs to already exist and your user must have access to it
-spread = Spread('moondatatrader', '20190504', create_spread=True)
-# This will ask to authenticate if you haven't done so before for 'example_user'
+        df = pd.DataFrame(article_list)
 
-# Display available worksheets
-# spread.sheets
-
-# Save DataFrame to worksheet 'New Test Sheet', create it first if it doesn't exist
-spread.df_to_sheet(df, index=False, sheet='한겨레', start='A1', replace=True)
-print(spread)
-# <gspread_pandas.client.Spread - User: '<example_user>@gmail.com', Spread: 'Example Spreadsheet', Sheet: 'New Test Sheet'>
-
-# You can now first instanciate a Client separately and query folders and
-# instanciate other Spread objects by passing in the Client
-# client = Client('moondatatrader')
-# # Assumming you have a dir called 'example dir' with sheets in it
-# available_sheets = client.find_spreadsheet_files_in_folders('example dir')
-# spreads = []
-# for sheet in available_sheets.get('example dir', []):
-#     spreads.append(Spread(client, sheet['id']))
+        spread = Spread('moondatatrader', 'newspaper', create_spread=True)
+        spread.df_to_sheet(df, index=False, sheet=media['title'], start='A1', replace=True)
