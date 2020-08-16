@@ -11,7 +11,7 @@ def index():
     wp = jp.WebPage()
     ymd = datetime.date.today().strftime("%Y%m%d")
     for media_id in media_list:
-        d = jp.Div(a=wp)
+        d = jp.Div(a=wp, classes='flex bg-blue-200 text-lg p-2 m-2')
         jp.A(text=media_list[media_id], href=f'/news/{media_id}/{ymd}', a=d)
     return wp
 
@@ -21,7 +21,7 @@ async def news(request):
     ymd = request.path_params.get('ymd', '20200101')
 
     wp = jp.WebPage()
-    head = jp.Div(a=wp)
+    head = jp.Div(a=wp, classes='text-lg')
     jp.A(text='Home', href='/', a=head, classes='p-2 bg-green-200')
     jp.Span(text=media_list[media_id], a=head, classes='m-2 p-2 bg-blue-200')
     jp.A(text='<', href=f'/news/{media_id}/{get_next_ymd(ymd, -1)}', a=head, classes='p-2 bg-red-200')
@@ -30,8 +30,8 @@ async def news(request):
     articles = get_article_list(media_id, ymd)
 
     for article in articles:
-        li = jp.Li(a=wp)
-        jp.A(text=article['title'], href=article['link'], a=li)
+        div = jp.Div(a=wp, classes='flex bg-gray-200 p-1 m-1 text-lg')
+        jp.A(text=article['title'], href=article['link'], a=div)
 
     return wp
 
