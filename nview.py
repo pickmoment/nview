@@ -31,7 +31,7 @@ async def news(request):
 
     for article in articles:
         div = jp.Div(a=wp, classes='flex bg-gray-200 p-1 m-1 text-lg')
-        jp.A(text=article['title'], href=article['link'], a=div)
+        jp.A(text=article['title'], href=article['link'], target="_blank", a=div)
 
     return wp
 
